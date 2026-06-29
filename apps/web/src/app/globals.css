@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --forest:    #1B3A2D;
+    --forest-light: #2D6A4F;
+    --mint:      #52B788;
+    --cream:     #F5EDD8;
+    --cream-dark: #EDE2C8;
+    --terra:     #E07A5F;
+    --terra-dark: #C9603E;
+    --gold:      #D4A853;
+
+    /* Custom easing curves — stronger than the default CSS easings */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: #F9F7F3;
+    color: #1C1C1C;
+  }
+}
+
+@layer components {
+  .book-cover {
+    @apply rounded-lg shadow-card object-cover bg-cream-dark;
+    aspect-ratio: 2/3;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full
+    bg-terra text-white font-semibold text-sm
+    transition-[transform,background-color,box-shadow] duration-200
+    hover:bg-terra-dark hover:-translate-y-0.5 hover:shadow-terra
+    active:scale-[0.97] active:translate-y-0
+    outline-none focus-visible:ring-2 focus-visible:ring-terra focus-visible:ring-offset-2
+    disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:hover:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-full
+    bg-forest text-white font-semibold text-sm
+    transition-[transform,background-color] duration-200
+    hover:bg-forest-light hover:-translate-y-0.5
+    active:scale-[0.97] active:translate-y-0
+    outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2
+    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full
+    text-sm font-medium text-gray-600
+    transition-[background-color,color,transform] duration-150
+    hover:bg-cream hover:text-forest
+    active:scale-[0.97]
+    outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card
+    transition-[box-shadow,border-color,transform] duration-200
+    hover:shadow-card-hover hover:border-gray-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white
+    font-sans text-sm text-gray-900
+    transition-[border-color,box-shadow] duration-200
+    focus:outline-none focus:border-forest-light focus:ring-2 focus:ring-forest/10
+    placeholder:text-gray-400
+    disabled:bg-gray-50 disabled:cursor-not-allowed;
+  }
+
+  .label {
+    @apply block text-xs font-semibold text-forest tracking-wide mb-1.5;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full
+    text-xs font-medium;
+  }
+
+  .badge-tbr     { @apply bg-cream text-forest; }
+  .badge-reading { @apply bg-mint/20 text-forest-light; }
+  .badge-read    { @apply bg-forest/10 text-forest; }
+  .badge-dnf     { @apply bg-red-50 text-red-600; }
+  .badge-paused  { @apply bg-gold/20 text-amber-700; }
+
+  .section-title {
+    @apply font-serif text-2xl font-bold text-forest leading-tight;
+  }
+
+  .page-title {
+    @apply font-serif text-3xl font-bold text-forest leading-tight;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+/* Book cover placeholder */
+.cover-placeholder {
+  background: linear-gradient(135deg, #2D6A4F 0%, #1B3A2D 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(245,237,216,0.6);
+  font-family: 'Playfair Display', serif;
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 8px;
+  line-height: 1.3;
+}
+
+/* ─── Stagger entrance for grid items ────────────────────────────────────
+   Items start slightly down + transparent and rise into place. Each item
+   gets an inline `--enter-delay` so the cascade is staggered. Stagger is
+   capped at 8 items to keep the total reveal under 480ms.
+   Respects prefers-reduced-motion. */
+@keyframes stagger-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-rise {
+  opacity: 0;
+  animation: stagger-rise 380ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-rise {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Subtle fade-up used for page-level entries (header, stat strip) */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fade-up 420ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ─── Skeleton shimmer ───────────────────────────────────────────────────
+   Reusable loading placeholder. Layered cream background with a moving
+   light streak. Use the .skeleton class on any element that needs a
+   pulse-loading state; pair with explicit width/height for the shape. */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background-color: #EDE2C8; /* cream-dark base */
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: 0.5rem;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+    opacity: 0.6;
+  }
+}

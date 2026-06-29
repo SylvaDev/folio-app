@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && pnpm turbo run build --filter=@folio/web",
+  "outputDirectory": "apps/web/.next",
+  "framework": "nextjs"
+}

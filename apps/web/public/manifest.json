@@ -1,0 +1,44 @@
+{
+  "name": "Folio — Your Reading Life",
+  "short_name": "Folio",
+  "description": "Your reading life, finally organized. The smart TBR and book tracker readers actually want.",
+  "start_url": "/library",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F9F7F3",
+  "theme_color": "#1B3A2D",
+  "categories": ["books", "lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "TBR Queue",
+      "short_name": "TBR",
+      "description": "See what to read next",
+      "url": "/tbr"
+    },
+    {
+      "name": "My Library",
+      "short_name": "Library",
+      "url": "/library"
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Stats",
+      "url": "/analytics"
+    }
+  ]
+}

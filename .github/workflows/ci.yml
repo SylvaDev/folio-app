@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-flight runs when a new commit lands on the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Type-check, lint, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check (web)
+        run: pnpm --filter @folio/web exec tsc --noEmit
+
+      - name: Lint (web)
+        run: pnpm --filter @folio/web exec next lint
+
+      # Build needs at least a placeholder Supabase URL so the client
+      # constructor doesn't throw at module load. Anon key can be any non-empty
+      # string for the build phase — it's only used at runtime.
+      - name: Build (web)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key-for-build-only
+        run: pnpm --filter @folio/web build
+
+  # Lightweight check that runs on every PR: ensure no .env file or other
+  # known sensitive file is being added to the repo. Belt-and-suspenders on
+  # top of .gitignore.
+  secret-scan:
+    name: Secret pattern scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Block accidental .env commits
+        run: |
+          DIFF_BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [ -z "$DIFF_BASE" ] || [ "$DIFF_BASE" = "0000000000000000000000000000000000000000" ]; then
+            # First push or no base — scan tracked files instead
+            FILES=$(git ls-files)
+          else
+            FILES=$(git diff --name-only --diff-filter=AM "$DIFF_BASE"...HEAD)
+          fi
+
+          # Match real env files but explicitly allow examples
+          BAD=$(echo "$FILES" | grep -E '(^|/)\.env(\.|$)' | grep -v '\.example$' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::Refusing to commit env files:"
+            echo "$BAD"
+            exit 1
+          fi
+          echo "OK, no env files in this changeset."

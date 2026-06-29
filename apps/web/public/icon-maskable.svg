@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Maskable: art must stay inside the safe zone (centered 80% circle) -->
+  <!-- Full-bleed forest green background -->
+  <rect width="512" height="512" fill="#1B3A2D"/>
+
+  <!-- Open book — scaled down to fit safe zone (inside the centered ~410px circle) -->
+  <g transform="translate(256, 256) scale(0.72) translate(-256, -256)" fill="none" stroke="#52B788" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 96 144 L 96 384 L 248 384 C 248 384 248 200 248 168 C 248 168 200 144 96 144 Z"/>
+    <path d="M 416 144 L 416 384 L 264 384 C 264 384 264 200 264 168 C 264 168 312 144 416 144 Z"/>
+  </g>
+
+  <!-- Brand dot, positioned within scaled book area -->
+  <circle cx="368" cy="178" r="18" fill="#E07A5F"/>
+</svg>
