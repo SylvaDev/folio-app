@@ -1,3 +1,4 @@
+import type { UserBook } from '@folio/shared'
 import { createClient } from '@/lib/supabase/server'
 import { SeriesClient } from './SeriesClient'
 import type { SeriesInfo } from './types'
@@ -50,5 +51,14 @@ export default async function SeriesPage() {
     }
   }
 
-  return <SeriesClient userBooks={userBooks ?? []} seriesMap={seriesMap} />
+  // The select above returns a partial UserBook shape (only the columns we
+  // need). SeriesClient reads through the data via narrow access patterns,
+  // so the cast is safe at runtime — TypeScript just needs help bridging
+  // the inferred shape to the declared prop type.
+  return (
+    <SeriesClient
+      userBooks={(userBooks ?? []) as unknown as UserBook[]}
+      seriesMap={seriesMap}
+    />
+  )
 }

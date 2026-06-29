@@ -19,7 +19,7 @@ export function getStripeClient(): Stripe {
   _client = new Stripe(key, {
     // Pin the API version so future Stripe defaults don't change behavior
     // without us noticing. Bump deliberately, alongside testing.
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-02-24.acacia',
     // Identify our integration to Stripe — appears in dashboard + support
     appInfo: { name: 'Folio', version: '0.1.0', url: 'https://foliotbr.app' },
     // Built-in retries for transient network blips
