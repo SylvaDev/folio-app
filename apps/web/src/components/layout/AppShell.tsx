@@ -99,7 +99,8 @@ export function AppShell({ user, profile, betaActive, children }: Props) {
         {/* Quick search */}
         <div className="px-4 py-3 border-b border-white/8">
           <Link
-            href="/library?search=1"
+            href="/discover"
+            onClick={() => setMobileOpen(false)}
             className="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-white/8 text-white/50 text-sm hover:bg-white/12 transition-colors"
           >
             <Search className="w-4 h-4" />
