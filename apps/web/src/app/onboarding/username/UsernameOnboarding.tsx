@@ -107,14 +107,11 @@ export function UsernameOnboarding({ initialSuggestion, displayName }: Props) {
             <div>
               <label className="label">Your username</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-mono pointer-events-none">
-                  foliotbr.app/u/
-                </span>
                 <input
                   ref={inputRef}
                   value={username}
                   onChange={e => setUsername(normalize(e.target.value))}
-                  className="input pl-[100px] font-mono"
+                  className="input pr-10 font-mono"
                   placeholder="your-name"
                   maxLength={30}
                   autoComplete="off"
@@ -127,13 +124,13 @@ export function UsernameOnboarding({ initialSuggestion, displayName }: Props) {
                 </span>
               </div>
               <div className="mt-2 min-h-[20px] text-xs">
-                {check.kind === 'unavailable' && (
+                {check.kind === 'unavailable' ? (
                   <span className="text-terra">{check.reason}</span>
-                )}
-                {check.kind === 'available' && (
-                  <span className="text-mint font-medium">@{username} is available</span>
-                )}
-                {check.kind === 'idle' && !username && (
+                ) : username ? (
+                  <span className={check.kind === 'available' ? 'text-mint font-medium' : 'text-gray-500'}>
+                    Your profile: <span className="font-mono text-forest">foliotbr.app/u/{username}</span>
+                  </span>
+                ) : (
                   <span className="text-gray-400">3-30 lowercase letters, numbers, or dashes</span>
                 )}
               </div>
